@@ -1,31 +1,15 @@
 #!/usr/bin/env python
 from bottle import route, error, post, get, run, static_file, abort, redirect, response, request, template
 import sys,urlparse,json
-import wiki
 
 
 @route('/index.html')
 def index():
 	redirect("/")
 
-@route('/query.html')
-def index():
-	redirect("/query")
-
 @route('/')
 def home():
 	return template('assets/index.html',name=request.environ.get('REMOTE_ADDR'))
-
-@route('/query')
-def search():
-	return template('assets/query.html',name=request.environ.get('REMOTE_ADDR'))
-
-@get("/search")
-def search():
-	query = request.query['query']
-	response.headers['Content-Type'] = 'text/javascript'
-	return json.dumps(wiki.search(query))
-
 @post("/autosuggest")
 def autosuggest():
 	entity=None
@@ -36,6 +20,8 @@ def autosuggest():
 		entity = dict(urlparse.parse_qs(data))
 	#print entity
 	return json.dumps([{"label":entity["q"][0],"value":entity["q"][0]}])
+
+
 
 # Static Routes
 @get('/assets/<filename:re:.*\.js>')
