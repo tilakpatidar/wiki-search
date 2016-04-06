@@ -21,7 +21,9 @@ def autosuggest():
 	#print entity
 	return json.dumps([{"label":entity["q"][0],"value":entity["q"][0]}])
 
-
+@route('/query')
+def search():
+	return template('assets/query.html',name=request.environ.get('REMOTE_ADDR'))
 
 # Static Routes
 @get('/assets/<filename:re:.*\.js>')
