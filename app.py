@@ -8,9 +8,18 @@ import sys,urlparse,json
 def index():
 	redirect("/")
 
+@route('/query.html')
+def index():
+	redirect("/query")
+
 @route('/')
 def home():
 	return template('assets/index.html',name=request.environ.get('REMOTE_ADDR'))
+
+@route('/query')
+def search():
+	return template('assets/query.html',name=request.environ.get('REMOTE_ADDR'))
+
 @post("/autosuggest")
 def autosuggest():
 	entity=None
