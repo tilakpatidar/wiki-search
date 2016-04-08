@@ -14,7 +14,7 @@
         var DEFAULT_LEFT=0;
 	//globals end
         window.searchQuery=function(q) {
-            window.location = "/cgi-bin/s.py?q=" + encodeURIComponent(q);
+            window.location = "/mp/query?q=" + encodeURIComponent(q);
         };
         
         //setting up backinput for shadow suggestion
@@ -63,7 +63,7 @@
 
 
         $("#srmse-logo").on("click", function() {
-            window.location = "http://srmsearchengine.in";
+            window.location = "/mp/";
         });
 
 

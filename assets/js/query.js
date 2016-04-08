@@ -40,7 +40,7 @@ function search(query,i,j){
 		}
 	});
 };
-search("india",0,10);
+search($("#search").val(),0,10);
 
 });
 

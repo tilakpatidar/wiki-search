@@ -1,9 +1,19 @@
 from srmse import db
 import queries
 import re,json,os
+from srmse import nutch
 es = db.getES()
 WIKI_MAPPING=json.loads(open("./wiki/infobox_mapping.json","r").read())
 WIKI_KEYS_DEL=["^(wikt|voy|mw|display|commons|species|type|small|align|width|expiry|imageSize|source|row)$","^.$"]
+
+
+
+def getTopLinks(TOP_LINKS):
+	results=es.mget(index="nutch",doc_type="doc",body=TOP_LINKS)["docs"]
+	results.reverse()
+	return results
+
+
 def search(query):
 	dic=queries.getWikiQuery(query)
 	res=es.search(index=queries.getWikiIndex(),doc_type=queries.getWikiDoc(),body=dic)
@@ -48,6 +58,7 @@ def search(query):
 		hp=""
 		title=""
 		body=""
+		image = []
 		try:
 			tmp_info=i["fields"]["results"][0]["box"]
 			t={}
@@ -89,11 +100,28 @@ def search(query):
 			body=i["highlight"]["body"][0]
 		except KeyError:
 			body=""
+		try:
+			image = i["fields"]["results"][0]["image"]
+		except KeyError:
+			image=[]
 		d.append({"infobox":info,
 			"url":url,
 			"title":title,
 			"body":body
-			
-			
 		})
-		return d
+		TOP_LINKS={"docs":[]}
+		for e in external_links:
+			u=e.replace("http://","http://").replace("https://","http://")
+			#searching with both http:// and https://
+			TOP_LINKS["docs"].append({"_id":nutch.getId(u),"_source":["url","title","host","type","meta_description","content"]})
+			TOP_LINKS["docs"].append({"_id":nutch.getId(u.replace("http://","https://")),"_source":["url","title","host","type","meta_description","content"]})
+		h=hp.replace("http://","http://").replace("https://","http://")
+		#searching with both http:// and https://
+		TOP_LINKS["docs"].append({"_id":nutch.getId(h),"_source":["url","title","host","type","meta_description","content"]})
+		TOP_LINKS["docs"].append({"_id":nutch.getId(h.replace("http://","https://")),"_source":["url","title","host","type","meta_description","content"]})
+		TOP_LINKS_TMP = getTopLinks(TOP_LINKS)
+		for r in TOP_LINKS_TMP:
+			if r["found"]:
+				r["_source"]["content"]=r["_source"]["content"][0:300]
+				d.append(r["_source"])
+	return d

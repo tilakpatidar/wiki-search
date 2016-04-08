@@ -18,13 +18,15 @@ def home():
 
 @route('/query')
 def search():
-	return template('assets/query.html',name=request.environ.get('REMOTE_ADDR'))
+	query = request.query['q']
+	print query
+	return template('assets/query.html',name=request.environ.get('REMOTE_ADDR') ,query = query )
 
 @get("/search")
 def search():
 	query = request.query['query']
 	response.headers['Content-Type'] = 'text/javascript'
-	return json.dumps(wiki.search(query))
+	return "callback("+json.dumps(wiki.search(query))+")"
 
 @post("/autosuggest")
 def autosuggest():
