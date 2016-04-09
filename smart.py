@@ -150,9 +150,13 @@ def search(query):
             if not results["results"]["bindings"]:
                 return {}
             else:
+                print results["results"]["bindings"]
                 for i in results["results"]["bindings"]:
-                        if i['x1']['xml:lang'] == 'en':
-                            return i
+                        try:
+                            if i['x1']['xml:lang'] == 'en':
+                                return i
+                        except KeyError:
+                            pass
                 return {}
 
 
