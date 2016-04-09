@@ -137,9 +137,13 @@ def wikipedia2dbpedia(wikipedia_url):
         return results["results"]["bindings"][0]["url"]["value"]
 
 
-def ask(query):
+def search(query):
     target, query, metadata = dbpedia.get_query(query)
-    print target, query, metadata
+    if target == None and query == None and metadata == None:
+        #nothing found
+        return {}
+    else:
+        return {"query":query}
 
 if __name__ == "__main__":
     default_questions = [

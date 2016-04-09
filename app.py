@@ -2,7 +2,7 @@
 from bottle import route, error, post, get, run, static_file, abort, redirect, response, request, template
 import sys,urlparse,json
 import wiki
-
+import smart as dbpedia
 
 @route('/index.html')
 def index():
@@ -27,6 +27,14 @@ def search():
 	query = request.query['query']
 	response.headers['Content-Type'] = 'text/javascript'
 	return "callback("+json.dumps(wiki.search(query)).replace("#dot#",".").replace(" dot ",".").replace(" Dot ",".")+")"
+
+@get("/smart")
+def search():
+	query = request.query['query']
+	response.headers['Content-Type'] = 'text/javascript'
+	return "callback("+json.dumps(dbpedia.search(query)).replace("#dot#",".").replace(" dot ",".").replace(" Dot ",".")+")"
+
+
 
 @post("/autosuggest")
 def autosuggest():
