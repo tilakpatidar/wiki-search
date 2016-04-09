@@ -161,8 +161,8 @@ def search(query):
                 #try for val based ques format
                 try:
                     if errors:
-                        k = results["results"]["bindings"][0]['x1']['datatype']
-                        return results["results"]["bindings"][0]['x1']
+                        k = results["results"]["bindings"]
+                        return results["results"]["bindings"]
                 except KeyError:
                     pass
                 return {}
