@@ -143,78 +143,13 @@ def search(query):
         #nothing found
         return {}
     else:
-        return {"query":query}
-
-if __name__ == "__main__":
-    default_questions = [
-        "What is a car?",
-        "Who is Tom Cruise?",
-        "Who is George Lucas?",
-        "Who is Mirtha Legrand?",
-        # "List Microsoft software",
-        "Name Fiat cars",
-        "time in argentina",
-        "what time is it in Chile?",
-        "List movies directed by Martin Scorsese",
-        "How long is Pulp Fiction",
-        "which movies did Mel Gibson starred?",
-        "When was Gladiator released?",
-        "who directed Pocahontas?",
-        "actors of Fight Club",
-    ]
-
-    if "-d" in sys.argv:
-        quepy.set_loglevel("DEBUG")
-        sys.argv.remove("-d")
-
-    if len(sys.argv) > 1:
-        question = " ".join(sys.argv[1:])
-
-        if question.count("wikipedia.org"):
-            print wikipedia2dbpedia(sys.argv[1])
-            sys.exit(0)
-        else:
-            questions = [question]
-    else:
-        questions = default_questions
-
-    print_handlers = {
-        "define": print_define,
-        "enum": print_enum,
-        "time": print_time,
-        "literal": print_literal,
-        "age": print_age,
-    }
-
-    for question in questions:
-        print question
-        print "-" * len(question)
-
-        target, query, metadata = dbpedia.get_query(question)
-
-        if isinstance(metadata, tuple):
-            query_type = metadata[0]
-            metadata = metadata[1]
-        else:
-            query_type = metadata
-            metadata = None
-
-        if query is None:
-            print "Query not generated :(\n"
-            continue
-
-        print query
-
-        if target.startswith("?"):
-            target = target[1:]
         if query:
             sparql.setQuery(query)
             sparql.setReturnFormat(JSON)
             results = sparql.query().convert()
-
             if not results["results"]["bindings"]:
-                print "No answer found :("
-                continue
+                return {}
+            else:
+                return results["results"]["bindings"][0]
 
-        print_handlers[query_type](results, target, metadata)
-        print
+
