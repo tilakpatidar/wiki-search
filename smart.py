@@ -150,21 +150,6 @@ def search(query):
             if not results["results"]["bindings"]:
                 return {}
             else:
-                print results["results"]["bindings"]
-                errors = False
-                for i in results["results"]["bindings"]:
-                        try:
-                            if i['x1']['xml:lang'] == 'en':
-                                return i
-                        except KeyError:
-                            errors =True
-                #try for val based ques format
-                try:
-                    if errors:
-                        k = results["results"]["bindings"]
-                        return results["results"]["bindings"]
-                except KeyError:
-                    pass
-                return {}
-
+                return results["results"]["bindings"]
+                
 
