@@ -150,6 +150,9 @@ def search(query):
             if not results["results"]["bindings"]:
                 return {}
             else:
-                return results["results"]["bindings"][0]
+                for i in results["results"]["bindings"]:
+                        if i['x1']['xml:lang'] == 'en':
+                            return i
+                return {}
 
 
